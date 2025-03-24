@@ -260,6 +260,7 @@ require('lazy').setup({
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
+  --
   -- This is often very useful to both group configuration, as well as handle
   -- lazy loading plugins that don't need to be loaded immediately at startup.
   --
@@ -272,7 +273,6 @@ require('lazy').setup({
   -- Then, because we use the `config` key, the configuration only runs
   -- after the plugin has been loaded:
   --  config = function() ... end
-
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -755,7 +755,7 @@ require('lazy').setup({
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      vim.cmd.colorscheme 'catppuccin-latte'
+      vim.cmd.colorscheme 'catppuccin-mocha'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -764,43 +764,7 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [']quote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
-    end,
-  },
+  
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -831,7 +795,20 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
+  {
+    'akinsho/toggleterm.nvim',
+    config = function()
+      require('toggleterm').setup {
+        size = 20,
+        open_mapping = [[<leader>tt]],
+        direction = 'float',
+        float_opts = {
+          border = 'curved',
+          winblend = 3,
+        },
+      }
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -875,3 +852,18 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+-- Initialize vim-plug
+vim.g.floaterm_keymap_toggle = '<F6>'
+vim.cmd [[
+    call plug#begin('~/.local/share/nvim/plugged')
+
+    " Add plugins
+    Plug 'voldikss/vim-floaterm'
+
+    call plug#end()
+]]
+
+-- Configuration for lightline.vim
+vim.g.lightline = {
+  colorscheme = 'wombat',
+}
